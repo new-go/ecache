@@ -1,0 +1,31 @@
+name: Tests
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+env:
+  GOPROXY: "https://proxy.golang.org"
+
+jobs:
+  test:
+    name: Go-Test
+    strategy:
+      fail-fast: false
+      matrix:
+        go: [ 1.16.x ]
+        os: [ ubuntu-latest ]
+    runs-on: ${{ matrix.os}}
+    steps:
+      - name: Installing Go
+        uses: actions/setup-go@v1
+        with:
+          go-version: ${{ matrix.go }}
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Run unit tests
+        run: go test -race -coverprofile=coverage -covermode=atomic -v
